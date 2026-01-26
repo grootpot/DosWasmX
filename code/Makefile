@@ -271,6 +271,7 @@ MYFLAGSC := \
 all: main.js
 	mv main.js ../dist/main.js
 	mv main.wasm ../dist/main.wasm
+	echo "Done"
 
 main.js: $(FILES)
 	emcc -o $@ $(FILES) \
@@ -291,7 +292,7 @@ main.js: $(FILES)
 	-sALLOW_MEMORY_GROWTH=1 \
 	-sEXIT_RUNTIME=0 \
 	-sINVOKE_RUN=0 \
-	"-sEXTRA_EXPORTED_RUNTIME_METHODS=['addRunDependency', 'removeRunDependency','FS', \
+	"-sEXPORTED_RUNTIME_METHODS=['addRunDependency', 'removeRunDependency','FS', \
 	'FS_createPath', 'FS_createPreloadedFile', 'FS_createDataFile', 'lengthBytesUTF8', \
 	'stringToUTF8', 'UTF16ToString', 'UTF8ToString', 'callMain', 'err', 'cwrap']" \
 	"-sEXPORTED_FUNCTIONS=['_main', '_malloc', '_free', '_abort', '_neilTurboMode', \
