@@ -54,7 +54,7 @@ class KeyMappings {
 class InputController {
 
     constructor() {
-        
+
         this.gamepadButtons = [];
         this.DebugKeycodes = false;
 
@@ -107,12 +107,12 @@ class InputController {
         this.manager.on("start", (evt, data) => {
             this.nippleStart = new Date();
             this.nippleForce = 0;
-            
+
             // drag mouse
             if (this.LastClick != null)
             {
-                const time1 = this.LastClick.getTime(); 
-                const time2 = (new Date()).getTime(); 
+                const time1 = this.LastClick.getTime();
+                const time2 = (new Date()).getTime();
                 const millisecondsDifference = time2 - time1;
                 if (millisecondsDifference < 300)
                 {
@@ -161,7 +161,7 @@ class InputController {
                     this.Key_Down = true;
                 }
 
-                // console.log('up: ' + this.Key_Up + ' down: ' + this.Key_Down + 
+                // console.log('up: ' + this.Key_Up + ' down: ' + this.Key_Down +
                 //     ' left: ' + this.Key_Left + ' right: ' + this.Key_Right)
             }
             else {
@@ -176,11 +176,11 @@ class InputController {
         })
 
         this.manager.on("end", (evt, data) => {
-            
+
             // detect click mouse
             this.nippleEnd = new Date();
-            const time1 = this.nippleStart.getTime(); 
-            const time2 = this.nippleEnd.getTime(); 
+            const time1 = this.nippleStart.getTime();
+            const time2 = this.nippleEnd.getTime();
             const millisecondsDifference = time2 - time1;
             if (millisecondsDifference < 300 && this.nippleForce < .5)
             {
@@ -326,8 +326,8 @@ class InputController {
         }
         else if (this.MobileStartDate != null)
         {
-            const time1 = this.MobileStartDate.getTime(); 
-            const time2 = (new Date()).getTime(); 
+            const time1 = this.MobileStartDate.getTime();
+            const time2 = (new Date()).getTime();
             const millisecondsDifference = time2 - time1;
             if (millisecondsDifference < 500)
             {
@@ -365,12 +365,12 @@ class InputController {
     }
     mobileReleaseSelect(event){
         event.preventDefault();
-        this.MobileSelect = false; 
+        this.MobileSelect = false;
         this.Key_Action_R = false; //onscreen keyboard
         this.MobileSelect_Counter=0;
     }
 
-    
+
     touchStart(event){
         event.preventDefault();
         let input_controller = this;
@@ -404,8 +404,8 @@ class InputController {
             {
                 var amount_horizontal = touch.clientX-input_controller.touchX_Start;
                 var amount_vertical = touch.clientY-input_controller.touchY_Start;
-                
-        
+
+
                 if (amount_horizontal>10)
                 {
                     if (!input_controller.Key_Right)
@@ -424,7 +424,7 @@ class InputController {
                 }
                 if (amount_vertical>10)
                 {
-                    
+
                     if (!input_controller.Key_Down)
                     {
                         input_controller.sendKeyDownEvent(input_controller.KeyMappings.Mapping_Down);
@@ -450,7 +450,7 @@ class InputController {
 
         let input_controller = this;
 
-        if (input_controller.Key_Left==false && input_controller.Key_Right==false 
+        if (input_controller.Key_Left==false && input_controller.Key_Right==false
             && input_controller.Key_Down==false && input_controller.Key_Up==false)
             input_controller.Touch_Tap=true;
         if (input_controller.Key_Right)
@@ -534,7 +534,7 @@ class InputController {
         this.gamepadButtons.push(new GamePadState(this.KeyMappings.Joy_Mapping_Action_L,this.KeyMappings.Mapping_Action_L));
         this.gamepadButtons.push(new GamePadState(this.KeyMappings.Joy_Mapping_Action_R,this.KeyMappings.Mapping_Action_R));
         this.gamepadButtons.push(new GamePadState(this.KeyMappings.Joy_Mapping_Menu,this.KeyMappings.Mapping_Menu));
-        
+
     }
 
     initGamePad(e) {
@@ -579,7 +579,7 @@ class InputController {
                         if (button.buttonTimer==0)
                         {
                             this.sendKeyDownEvent(button.keyCode);
-                        }   
+                        }
                         button.buttonDown = true;
                         button.buttonTimer++;
                     }
@@ -592,7 +592,7 @@ class InputController {
                             this.sendKeyUpEvent(button.keyCode);
                         }
                     }
-                });  
+                });
 
                 //process axes
                 try {
@@ -636,8 +636,8 @@ class InputController {
 
             }
         }
-        catch (error) 
-        { 
+        catch (error)
+        {
             console.log('an error', error)
         }
     }
@@ -655,17 +655,17 @@ class InputController {
     preventDefaultKeys(event)
     {
         if (
-            event.key == 'F1' || 
-            event.key == 'F2' || 
-            event.key == 'F3' || 
-            event.key == 'F4' || 
-            event.key == 'F5' || 
-            event.key == 'F6' || 
-            event.key == 'F7' || 
-            event.key == 'F8' || 
-            event.key == 'F9' || 
-            event.key == 'F10' || 
-            event.key == 'F11' || 
+            event.key == 'F1' ||
+            event.key == 'F2' ||
+            event.key == 'F3' ||
+            event.key == 'F4' ||
+            event.key == 'F5' ||
+            event.key == 'F6' ||
+            event.key == 'F7' ||
+            event.key == 'F8' ||
+            event.key == 'F9' ||
+            event.key == 'F10' ||
+            event.key == 'F11' ||
             event.key == 'F12' ||
             event.key == 'Enter' ||
             event.key == 'Backspace' ||
@@ -688,19 +688,23 @@ class InputController {
     }
 
     keyDown(event) {
-
         this.preventDefaultKeys(event);
 
         let input_controller = this;
         input_controller.Key_Last = event.key;
-        if (this.isNumber(event.keyCode))
+
+        // Track all keycodes including modifiers
+        if (this.isNumber(event.keyCode) && event.keyCode > 0)
         {
-            input_controller.KeyCodes.push(event.keyCode);
+            if (!input_controller.KeyCodes.includes(event.keyCode)) {
+                input_controller.KeyCodes.push(event.keyCode);
+            }
         }
+
         if (input_controller.DebugKeycodes)
-            console.log(event);
-        
-        //only allow gamepad to go through here
+            console.log('keyDown:', event.keyCode, event.key, 'KeyCodes:', input_controller.KeyCodes);
+
+        // Process gamepad events for action buttons
         if (!event.type.startsWith('Gamepad'))
             return;
 
@@ -750,20 +754,22 @@ class InputController {
         if (event.key == input_controller.KeyMappings.Mapping_Menu) {
             input_controller.Key_Menu = true;
         }
-        
     }
 
     keyUp(event) {
-
         this.preventDefaultKeys(event);
 
         let input_controller = this;
-        if (this.isNumber(event.keyCode))
+
+        if (this.isNumber(event.keyCode) && event.keyCode > 0)
         {
             input_controller.KeyCodes = input_controller.KeyCodes.filter(item => item !== event.keyCode);
         }
 
-        //only allow gamepad to go through here
+        if (input_controller.DebugKeycodes)
+            console.log('keyUp:', event.keyCode, 'KeyCodes:', input_controller.KeyCodes);
+
+        // Process gamepad events for action buttons
         if (!event.type.startsWith('Gamepad'))
             return;
 
@@ -813,11 +819,10 @@ class InputController {
         if (event.key == input_controller.KeyMappings.Mapping_Menu) {
             input_controller.Key_Menu = false;
         }
-        
     }
 
     updateControls(){
-        
+
         let mobileMode = this.manager ? true : false;
         let mobileString = '';
 
@@ -858,7 +863,7 @@ class InputController {
             if (this.Key_Action_B) mobileString += '1'; else mobileString += '0';
         }
 
-        
+
         if (this.Key_Action_Start) mobileString += '1'; else mobileString += '0';
         if (this.Key_Action_L) mobileString += '1'; else mobileString += '0';
         if (this.Key_Action_R) mobileString += '1'; else mobileString += '0';
@@ -905,10 +910,20 @@ class InputController {
 
     //the wasm will call this function 60 times a second to grab the controls
     updateDosControls(){
+        const keyCodesArray = this.dosControls[3];
+        const keyCodesLength = keyCodesArray.length;
+        if (this.DebugKeycodes && keyCodesLength > 0)
+            console.log('updateDosControls - sending KeyCodes:', keyCodesArray, 'length:', keyCodesLength);
+
         if (this.dosControls)
         {
-            window["myApp"].sendDosControls(this.dosControls[0], this.dosControls[1], this.dosControls[2],
-                this.dosControls[3], this.dosControls[3].length);
+            window["myApp"].sendDosControls(
+                this.dosControls[0],
+                this.dosControls[1],
+                this.dosControls[2],
+                this.dosControls[3],  // Pass the array directly - Emscripten handles it
+                this.dosControls[3].length
+            );
         }
     }
 }

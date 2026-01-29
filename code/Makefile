@@ -324,6 +324,7 @@ main.js: $(FILES)
 	-fwasm-exceptions \
 	-sUSE_ZLIB=1 \
 	-sUSE_SDL=2 \
+	-sASSERTIONS=1 \
 	-sASYNCIFY=1 \
 	"-sASYNCIFY_IMPORTS=['syncSleep']" \
 	-sASYNCIFY_WHITELIST=@asyncify.txt

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="keywords" content="DOS Emulator, DOS JavaScript Emulator, WebAssembly, HTML5">
     <meta charset="UTF-8">
+    <!-- when online
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
@@ -14,20 +15,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nipplejs/0.10.0/nipplejs.min.js"></script>
+    -->
     <!-- when developing offline -->
-    <!-- <script src="jquery-3.3.1.min.js"></script>
-    <link rel="stylesheet" href="font-awesome.min.css">
-    <script src="rivets.bundled.min.js"></script>
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <script src="popper.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <script src="toastr.min.js"></script>
-    <link rel="stylesheet" href="toastr.min.css">
-    <script src="FileSaver.min.js"></script> 
-    <script src="zip.min.js"></script>
-    <script src="nipplejs.min.js"></script> -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <script src="js/rivets.bundled.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/toastr.min.js"></script>
+    <link rel="stylesheet" href="css/toastr.min.css">
+    <script src="js/FileSaver.min.js"></script>
+    <script src="js/nipplejs.min.js"></script>
 </head>
 <style>
     .githubDiv a {
@@ -76,13 +77,13 @@
             color: black;
         }
     }
-    
+
 
 
     input[type="file"] {
         display: none;
     }
-    
+
     .progress {
         height: 2rem;
         font-size: 1rem;
@@ -91,7 +92,7 @@
         vertical-align: top;
         padding-top: 10px;
     }
-    
+
     .lightpurple {
         background-color: rgb(189, 174, 173);
     }
@@ -125,8 +126,8 @@
                     <i class="fa fa-refresh fa-spin" style="font-size:14px;margin-right:0.5em;"></i>
                     Loading...
                 </div>
-                
-                
+
+
                 <div class="progress mt-4" id="progressOuter" rv-if="data.showProgress">
                     <div class="progress-bar bg-info" role="progressbar" id="myProgress">1%</div>
                 </div>
@@ -137,41 +138,43 @@
                 <span rv-if="data.dblistDisks | ev_string '.length > 0'">
                     <button class="btn btn-primary mt-4" onclick="myApp.loadRom(true);" id="btnStart"
                         rv-disabled="data.moduleInitializing"
-                        rv-if="data.loggedIn | ev '==false'">Start Computer</button>    
+                        rv-if="data.loggedIn | ev '==false'">Start Computer</button>
                 </span>
                 <span rv-if="data.dblistDisks | ev_string '.length == 0'">
                     <span rv-if="data.settings.DEFAULTIMG">
                         <button class="btn btn-primary mt-4" onclick="myApp.loadRom(true);" id="btnStart"
                             rv-disabled="data.moduleInitializing"
-                            rv-if="data.loggedIn | ev '==false'">Start Computer</button>    
+                            rv-if="data.loggedIn | ev '==false'">Start Computer</button>
                     </span>
                 </span>
 
-                
-                <button id="btnUploadRom" class="btn btn-primary mt-4" onclick="myApp.uploadBrowse()" 
+
+                <button id="btnLoadEmpty" class="btn btn-primary mt-4" onclick="myApp.loadEmulator()"
+                    rv-disabled="data.moduleInitializing">Start</button>
+                <button id="btnUploadRom" class="btn btn-primary mt-4" onclick="myApp.uploadBrowse()"
                     rv-disabled="data.moduleInitializing">Browse</button>
-                <button id="btnUploadRom" class="btn btn-primary mt-4" onclick="myApp.settingsModal()" 
+                <button id="btnUploadRom" class="btn btn-primary mt-4" onclick="myApp.settingsModal()"
                     rv-disabled="data.moduleInitializing">Settings</button>
                 <span rv-if="data.hasCloud">
                     <button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==false'"
                         onclick="myApp.loginModal()">Login</button>
-                    <button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==true'"  
+                    <button class="btn btn-primary mt-4" rv-if="data.loggedIn | ev '==true'"
                         onclick="myApp.logout()">Logout</button>
                 </span>
-                
-        
+
+
                 <input id="file-upload" type="file" multiple />
-        
+
                 <!-- ROM LIST -->
                 <div class="form-group mt-2 mb-4" rv-if="data.loggedIn | ev '==true'"
                     style="width: 300px;margin-left: auto; margin-right:auto;">
                     <select class="form-control" id="romselect">
-                        <option rv-each-rom="data.romList" 
-                            rv-skipiso="rom.skipiso" 
-                            rv-ram="rom.ram" 
+                        <option rv-each-rom="data.romList"
+                            rv-skipiso="rom.skipiso"
+                            rv-ram="rom.ram"
                             rv-harddrive="rom.harddrive"
-                            rv-startupScript="rom.startupScript" 
-                            rv-cpu="rom.cpu" 
+                            rv-startupScript="rom.startupScript"
+                            rv-cpu="rom.cpu"
                             rv-value="rom.url">{rom.title}</option>
                     </select>
                 </div>
@@ -214,7 +217,7 @@
                     <div rv-html="data.message">
                     </div>
                 </div>
-                
+
 
                 <button class="btn btn-primary mt-2 mb-2" onclick="myApp.newRom()" >Exit</button>
                 <button class="btn btn-primary mt-2 mb-2" onclick="myApp.zoomOut()" id="btnZoomOut" >Zoom Out</button>
@@ -287,12 +290,12 @@
                 </div>
             </div>
 
-            
+
         </div>
 
         <div style="display: none;" id="errorOuter">
             <div rv-if="data.lblError"
-                class="alert alert-danger mt-4" id="lblError" role="alert" 
+                class="alert alert-danger mt-4" id="lblError" role="alert"
                 rv-html="data.lblError">
             </div>
         </div>
@@ -314,7 +317,7 @@
             If you installed Windows then remember to shut down the OS before exiting the page.
         </div>
     </div>
-    
+
     <h6 id="githubDiv" class="githubDiv card-title mt-4 text-center" style="display: none;">
         <a href="https://github.com/nbarkhina/doswasmx" target="_blank">
             View source on GitHub
@@ -403,7 +406,7 @@
                             </table>
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="modal-footer" style="padding-top: 0;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -453,7 +456,7 @@
                         Select ISO/CUE/BIN files to load into the CD drive.
                     </div>
                     <div rv-if="data.loadCD">
-                        <b>NOTE</b> This will restart your computer 
+                        <b>NOTE</b> This will restart your computer
                     </div>
                     <div rv-if="data.changeCD">
                         Select ISO/CUE/BIN files to swap into the CD drive.
@@ -468,8 +471,8 @@
                         <div rv-hide="data.loadFloppy">
                             <div rv-hide="data.changeFloppy">
                                 <div rv-hide="data.changeCD">
-                                    <b>WARNING</b> It is recommended to shutdown Windows before running this otherwise it will be shut down automatically. 
-                                    Click browse and select all the files to import when ready. 
+                                    <b>WARNING</b> It is recommended to shutdown Windows before running this otherwise it will be shut down automatically.
+                                    Click browse and select all the files to import when ready.
                                     <div rv-hide="data.noCopyImport">
                                         After Windows reboots your files will be in C:\IMPORT
                                     </div>
@@ -491,14 +494,14 @@
         </div>
     </div>
 
-    
+
     <!-- Mobile UX -->
     <div id="mobileButtons" class="mobileButtons" style="display: none;text-align: center;
             padding-top: 20px;padding-bottom: 20px;">
         <div style="margin-bottom: 10px;">
             <div style="display: none;" id="errorMobile">
                 <div rv-if="data.lblError"
-                    class="alert alert-danger mt-4" id="lblError" role="alert" 
+                    class="alert alert-danger mt-4" id="lblError" role="alert"
                     rv-html="data.lblError">
                 </div>
             </div>
@@ -575,9 +578,9 @@
     </div>
     <div id="mobileDiv" style="display: none;height: 100%;">
         <div id="mobileCanvas">
-    
+
         </div>
-    
+
         <div id="mobileBottomPanel" style="font-size: 36px;height:100%;text-align: center!important;background: white;">
             <table style="width: 100%;" cellpadding=0 cellspacing=0>
                 <tr>
@@ -618,13 +621,13 @@
                     </div>
                 </div>
             </div>
-    
+
             <div id="menuDiv" class="menuDiv"
                 style="opacity: 0.5; background-color: rgba(243,244,244,1);width: 70px;position: absolute; top:0px;left:170px;font-size: 14px;">
                 -MENU-
             </div>
-    
-    
+
+
         </div>
     </div>
 

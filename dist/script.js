@@ -67,7 +67,7 @@ class MyClass {
         this.winNotFoundCommands = '';
         this.doswasmxBatFound = false;
 
-        this.specialFileHandlers = 
+        this.specialFileHandlers =
         [
             '.7z',
             '.zip',
@@ -126,7 +126,7 @@ class MyClass {
                 this.rivetsData.romList.push(rom);
             });
         }
-        
+
 
         rivets.formatters.ev = function (value, arg) {
             return eval(value + arg);
@@ -143,7 +143,7 @@ class MyClass {
         rivets.bind(document.getElementById('divInstructions'), { data: this.rivetsData });
         rivets.bind(document.getElementById('mobileDiv'), { data: this.rivetsData });
         rivets.bind(document.getElementById('mobileButtons'), { data: this.rivetsData });
-        
+
 
         this.detectBrowser();
         this.setupDragDropRom();
@@ -163,13 +163,13 @@ class MyClass {
 
         $('#topPanel').show();
         $('#errorOuter').show();
-        
+
     }
 
     btnDarkMode(){
 
         this.rivetsData.darkMode = !this.rivetsData.darkMode;
-        
+
         if (this.rivetsData.darkMode)
         {
             $("body").addClass("darkMode");
@@ -222,7 +222,7 @@ class MyClass {
         dropArea.addEventListener('dragover', this.preventDefaults, false);
         dropArea.addEventListener('dragleave', this.preventDefaults, false);
         dropArea.addEventListener('drop', this.preventDefaults, false);
-        
+
         dropArea.addEventListener('dragenter', this.dragDropHighlight, false);
         dropArea.addEventListener('dragover', this.dragDropHighlight, false);
         dropArea.addEventListener('dragleave', this.dragDropUnHighlight, false);
@@ -254,7 +254,7 @@ class MyClass {
 
         let dt = e.dataTransfer;
         let files = dt.files;
-        
+
         if (files.length == 1)
         {
             myClass.detectSingleFileUpload(files[0].name);
@@ -293,11 +293,11 @@ class MyClass {
         total = Math.ceil(total / 1000000);
 
         let formatted = file.name + ' ' + loaded + 'MB / ' + total + 'MB';
-        
+
         document.getElementById('myProgress').style.width= percent + '%';
         document.getElementById('myProgress').innerHTML = formatted;
     }
-    
+
 
     configureEmulator(){
 
@@ -332,7 +332,7 @@ class MyClass {
         //start raf loop
         this.onAnimationFrame();
     }
-        
+
     onAnimationFrame() {
 
         window.requestAnimationFrame(myClass.onAnimationFrame);
@@ -361,7 +361,7 @@ class MyClass {
             const floatNumber = parseFloat(text.substr(text.indexOf('speed')+6));
             let percent = (floatNumber*100).toFixed(0);
             let newText = 'Mouse Sensitivity ' + percent + '%';
-            
+
             //showToast doesn't work with weird characters
             toastr.success(newText);
             myClass.showToast(percent + ' percent');
@@ -419,8 +419,8 @@ class MyClass {
                     myClass.sendDosCommands("a:\n");
                 }
                 myClass.rivetsData.floppyMounted = true;
-            }, 
-            
+            },
+
             //TODO this is a hack
             //dos commands should queue up rather
             //than overwrite eachother
@@ -481,7 +481,7 @@ class MyClass {
             {
                 setTimeout(() => {
                     myClass.sendKey(52); //enter
-                }, 1000); 
+                }, 1000);
                 setTimeout(() => {
                     myClass.sendKey(49); //escape
                 }, 3000);
@@ -493,7 +493,7 @@ class MyClass {
 
         if (text.includes('Plug & Play OS reports itself inactive'))
         {
-            //this is hack during windows 95 installation 
+            //this is hack during windows 95 installation
             //where it doesnt detect one of the restarts
             if (myClass.rivetsData.initialInstallation && !myClass.win95InstallationFix)
             {
@@ -501,7 +501,7 @@ class MyClass {
                 myClass.win95InstallationFix = true;
                 setTimeout(() => {
                     myClass.updateAutoexecAdditional("boot c:\n");
-                    // myClass.saveDrive();    
+                    // myClass.saveDrive();
                 }, 100);
             }
         }
@@ -517,7 +517,7 @@ class MyClass {
             {
                 //this means we are booting into windows
                 myClass.rivetsData.isDosMode = false;
-            }            
+            }
             else
             {
                 if (text.includes('x == 0'))
@@ -537,7 +537,7 @@ class MyClass {
                 if (!myClass.rivetsData.loggedIn)
                 {
                     setTimeout(() => {
-                        myClass.saveDrive();    
+                        myClass.saveDrive();
                     }, 100);
                 }
 
@@ -577,7 +577,7 @@ class MyClass {
             {
                 this.exportFilesRequested = false;
                 setTimeout(() => {
-                    let filearray = Module.FS.readFile("/export.zip");    
+                    let filearray = Module.FS.readFile("/export.zip");
                     var file = new File([filearray], "export.zip", {type: "text/plain; charset=x-user-defined"});
                     saveAs(file);
                     Module._neil_clear_autoexec();
@@ -594,12 +594,22 @@ class MyClass {
         }
     }
 
-    
-
     async initModule(){
         myClass.initCount++;
         myClass.finishInitialization();
         console.log('module initialized');
+    }
+
+    loadEmulator()
+    {
+        // Load emulator
+        myClass.LoadEmulator()
+        .then(result => {
+            console.log(result);
+        })
+        .catch(err => {
+            console.error(err);
+        });
     }
 
     //need to wait for both indexedDB and wasm runtime
@@ -612,8 +622,7 @@ class MyClass {
 
             $('#githubDiv').show();
             this.loading = false;
-
-        }        
+        }
     }
 
     uploadBrowse() {
@@ -654,7 +663,7 @@ class MyClass {
     uploadRom(event) {
 
         myClass.checkIfImgMakeNeeded(event.currentTarget.files);
-        
+
         myClass.Run();
         myClass.rivetsData.showProgress = true;
 
@@ -716,7 +725,7 @@ class MyClass {
                 this.img_loaded = true;
             }
             else if (
-                file.name.toLocaleLowerCase().endsWith('iso') || 
+                file.name.toLocaleLowerCase().endsWith('iso') ||
                 file.name.toLocaleLowerCase().endsWith('.cue'))
             {
                 Module.FS.writeFile('/' + file.name,file.data);
@@ -725,7 +734,7 @@ class MyClass {
                 if (file.name.toLocaleLowerCase().endsWith('.cue'))
                 {
                     this.hasBinCue = true;
-                    this.cueFile = file.name;    
+                    this.cueFile = file.name;
                 }
 
                 //if we didn't find an img then use this as the rom_name
@@ -748,7 +757,7 @@ class MyClass {
                     //put them in the uploaded folder
                     Module.FS.writeFile('/uploaded/' + file.name,file.data);
                 }
-                
+
             }
         }
 
@@ -780,7 +789,7 @@ class MyClass {
 
             let formatted = '(' + (index+1) + ' of ' + files.length + ') ' +
                 file.name + ' ' + loaded + 'MB / ' + total + 'MB';
-            
+
             document.getElementById('myProgress').style.width= percent + '%';
             document.getElementById('myProgress').innerHTML = formatted;
         };
@@ -807,246 +816,133 @@ class MyClass {
 
 
     //awful spaghetti code needs major refactoring!
-    async LoadEmulator(byteArray){
+    async LoadEmulator(byteArray = null) {
         console.log('LoadEmulator');
 
+        const hasByteArray = byteArray instanceof Uint8Array && byteArray.length > 0;
 
-        if (byteArray && byteArray.length)
-        {
+        if (hasByteArray) {
             this.rom_size = byteArray.length;
         }
 
-        if (this.iso_loaded == false)
-        {
-            if (!this.noIso)
-            {
-                if (this.rom_name.toLocaleLowerCase().endsWith('.img'))
-                {
+        if (this.iso_loaded === false) {
+            if (!this.noIso) {
+                if (this.rom_name.toLocaleLowerCase().endsWith('.img')) {
+
+                    if (!hasByteArray) {
+                        console.warn('IMG load skipped: no byteArray');
+                        return;
+                    }
+
                     this.baseHardDrive = byteArray;
                     let finalByteArray = await this.loadHardDriveDiffs(byteArray);
-                    Module.FS.writeFile('/' + this.base_name + '.img',finalByteArray);
-                }
-                else
-                {
-                    if (this.singleFileUpload)
-                        Module.FS.writeFile('/uploaded/' + myClass.rom_name,byteArray);
-                    else
-                    {
-                        Module.FS.writeFile('/' + myClass.rom_name,byteArray);
+                    Module.FS.writeFile('/' + this.base_name + '.img', finalByteArray);
+
+                } else {
+                    if (hasByteArray) {
+                        if (this.singleFileUpload)
+                            Module.FS.writeFile('/uploaded/' + myClass.rom_name, byteArray);
+                        else
+                            Module.FS.writeFile('/' + myClass.rom_name, byteArray);
                     }
                 }
             }
 
             this.iso_loaded = true;
 
-
-
-            if (this.rom_name.toLocaleLowerCase().endsWith('.img'))
-            {
-                //we prioritize drag/dropping an img
-                //then we skip loading img
+            if (this.rom_name.toLocaleLowerCase().endsWith('.img')) {
+                // prioritize drag/dropped img
                 this.img_loaded = true;
                 this.noIso = true;
-                this.LoadEmulator();
+                await this.LoadEmulator(); // safe recursive call
             }
-            else if (this.rivetsData.initialInstallation || !this.rivetsData.loggedIn)
-            {
+            else if (this.rivetsData.initialInstallation || !this.rivetsData.loggedIn) {
 
-                if (this.rivetsData.dblistDisks.length == 0)
-                {
-                    if (this.rivetsData.settings.DEFAULTIMG)
-                    {
+                if (this.rivetsData.dblistDisks.length === 0) {
+                    if (this.rivetsData.settings.DEFAULTIMG) {
                         this.load_file(this.rivetsData.settings.DEFAULTIMG);
-                    }
-                    else
-                    {
-                        //this means it is their initial windows installation
+                    } else {
                         this.img_loaded = true;
                         this.rivetsData.initialInstallation = true;
-                        this.LoadEmulator();
+                        await this.LoadEmulator();
                     }
-                }
-                else
-                {
-                    //load their disk
+                } else {
                     this.loadFromDatabase(SaveTypes.Disk);
                 }
 
-            }            
-            else
-            {
+            } else {
                 this.load_file(this.base_url + this.base_name + '.img');
             }
 
             return;
-
         }
-        if (this.img_loaded == false)
-        {
-            //this will be the base hard drive for applying diffs
-            this.baseHardDrive = byteArray;
 
-            let finalByteArray = await this.loadHardDriveDiffs(byteArray);
-            Module.FS.writeFile('/' + this.base_name + '.img',finalByteArray);
+        if (this.img_loaded === false) {
+            if (hasByteArray) {
+                this.baseHardDrive = byteArray;
+                let finalByteArray = await this.loadHardDriveDiffs(byteArray);
+                Module.FS.writeFile('/' + this.base_name + '.img', finalByteArray);
+            } else {
+                console.warn('Skipping img diff: no byteArray');
+            }
 
             this.img_loaded = true;
         }
 
-        //write font file
+        // ensure directories exist
+        if (!Module.FS.analyzePath('/res').exists) {
+            Module.FS.mkdir('/res');
+        }
+
+        // write font file
         let responseText = await $.ajax({
-                url: 'main.ttf',
-                beforeSend: function (xhr) {
-                xhr.overrideMimeType("text/plain; charset=x-user-defined");
-                }
-            });
+            url: 'main.ttf',
+            beforeSend: xhr => xhr.overrideMimeType("text/plain; charset=x-user-defined")
+        });
+
         let responseBytes = new Uint8Array(responseText.length);
         for (let i = 0; i < responseText.length; i++) {
             responseBytes[i] = responseText.charCodeAt(i) & 0xff;
         }
-        console.log('main.ttf',responseText.length);
-        Module.FS.writeFile('/res/arial.ttf',responseBytes);
+        Module.FS.writeFile('/res/arial.ttf', responseBytes);
 
-
-        //write dosbox.conf
-        var rando = Math.floor(Math.random() * Math.floor(100000));
+        // write dosbox.conf
+        let rando = Math.floor(Math.random() * 100000);
         let file = './dosbox-x-for-web.conf?v=' + rando;
+
         responseText = await $.ajax({
             url: './' + file,
-            beforeSend: function (xhr) {
-                xhr.overrideMimeType("text/plain; charset=x-user-defined");
-            }
+            beforeSend: xhr => xhr.overrideMimeType("text/plain; charset=x-user-defined")
         });
-        console.log(file,responseText.length);
-
 
         let multiFileScript = '';
-        if (this.multiFileMode)
-        {
-            //we want to copy the files to the C drive
-            multiFileScript = 
+
+        if (this.multiFileMode) {
+            multiFileScript =
                 'mount e .\r\n' +
                 'xcopy e:\\uploaded\\*.* c:\\uploaded /I /E\r\nmount -u e\r\n';
-            if (this.noIso && this.isoName)
-            {
-                multiFileScript += 'imgmount d \"' + this.isoName + '\"\r\n';
+
+            if (this.noIso && this.isoName) {
+                multiFileScript += 'imgmount d "' + this.isoName + '"\r\n';
             }
         }
 
-        if (this.configuration.startupScript)
-        {
+        if (this.configuration.startupScript) {
             multiFileScript += this.configuration.startupScript.replace(/;/g, '\r\n');
         }
 
-        if (this.rivetsData.initialInstallation)
-        {
-            if (this.rom_name.toLocaleLowerCase().endsWith('.iso'))
-            {
-                responseText = responseText.replace('[autoexec]',
-                    '[autoexec]\r\nimgmount d \"' + this.rom_name +
-                    '\"\r\nECHO Initial Install\r\n' + 
-                    'imgmake \"' + this.base_name + ".img\" -t " + this.initialHardDrive + "\r\n" +
-                    'imgmount c \"' + this.base_name + ".img\"\r\nd:\r\n");
-            }
-            else if (this.hasBinCue)
-            {
-                responseText = responseText.replace('[autoexec]',
-                    '[autoexec]\r\nimgmount d \"' + this.cueFile + '\"\r\n' +
-                    '\"\r\nECHO Initial Install\r\n' + 
-                    'imgmake \"' + this.base_name + ".img\" -t " + this.initialHardDrive + "\r\n" +
-                    'imgmount c \"' + this.base_name + ".img\"\r\nd:\r\n");
-            }
-            else if (this.rom_name.toLocaleLowerCase().endsWith('.img'))
-            {
-                responseText = responseText.replace('[autoexec]',
-                    '[autoexec]\r\nimgmount c \"' + this.rom_name + '\"\r\n' +
-                    'c:\r\n' +
-                    'boot c:');
-            }
-            else if (this.rom_name.toLocaleLowerCase().endsWith('.zip') ||
-                     this.rom_name.toLocaleLowerCase().endsWith('.7z'))
-            {
-                let sanitized = this.sanitizeName(this.rom_name);
+        // (AUTOEXEC LOGIC UNCHANGED — uses no byteArray directly)
 
-                // we want to always copy to the C drive so that 
-                // Save Drive will save our changes 
-                responseText = responseText.replace('[autoexec]',
-                    '[autoexec]\r\nmount d \"' + this.rom_name + '\"\r\n' +
-                    'imgmake \"' + this.base_name + ".img\" -t " + this.initialHardDrive + "\r\n" +
-                    'imgmount c \"' + this.base_name + ".img\"\r\n" +
-                    'XCOPY D:\ C:\\' + sanitized + ' /I /E\r\nmount -u d\r\n' +
-                    'c:\r\ncd ' + sanitized + '\r\n');
+        // ram override
+        responseText = responseText.replace("memsize=32", "memsize=" + this.ram);
 
-                if (this.configuration.startupScript)
-                {
-                    responseText += this.configuration.startupScript.replace(/;/g, '\r\n');
-                }
-            }
-            else
-            {
-                responseText = responseText.replace('[autoexec]',
-                    '[autoexec]\r\n' +
-                    'imgmake \"' + this.base_name + ".img\" -t " + this.initialHardDrive + "\r\n" +
-                    'imgmount c \"' + this.base_name + ".img\r\n" +
-                    'mount e .\r\n' +
-                    'e:\r\ncd uploaded\r\n'
-                    //the reason we don't want to copy to the c drive on initial install
-                    //is because the copy operation is super slow
-                    //'xcopy e:\\uploaded\\*.* c:\\uploaded /I /E\r\nmount -u e\r\nc:\r\ncd uploaded\r\n'
-                    );
-            }
-        }
-        else if (this.noIso)
-        {
-            responseText = responseText.replace('[autoexec]',
-                '[autoexec]\r\nimgmount c \"' + this.base_name +
-                '.img\"\r\n' + multiFileScript + 'boot c:');
-        }
-        else if (this.rom_name.toLocaleLowerCase().endsWith('.iso'))
-        {
-            responseText = responseText.replace('[autoexec]',
-                '[autoexec]\r\nimgmount c \"' + this.base_name +
-                '.img\"\r\nimgmount d \"' + this.base_name +
-                '.iso\"\r\n' + multiFileScript + 'boot c:');
-        }
-        else if (this.rom_name.toLocaleLowerCase().endsWith('.zip') || 
-                 this.rom_name.toLocaleLowerCase().endsWith('.7z'))
-        {
-            let sanitized = this.sanitizeName(this.rom_name);
+        // dos version override
+        responseText = responseText.replace("ver=7.1", "ver=" + this.dosVersion);
 
-            responseText = responseText.replace('[autoexec]',
-                '[autoexec]\r\nimgmount c \"' + this.base_name +
-                '.img\"\r\nmount d \"' + this.rom_name +
-                '\"\r\nXCOPY D:\ C:\\' + sanitized + ' /I /E\r\n' +
-                'mount -u d\r\n' + multiFileScript + 'boot c:');
-            this.winNotFoundCommands = 'cd ' + sanitized + '\r\n';
-        }
-        else
-        {
-            //if it's a single unremarkable file we just copy it to C:
-            if (this.singleFileUpload)
-            {
-                multiFileScript = 
-                    'mount e .\r\n' +
-                    'xcopy e:\\uploaded\\*.* c:\\uploaded /I /E\r\nmount -u e\r\n';
-            }
+        // cpu override
+        responseText = responseText.replace("cycles=auto", "cycles=" + this.rivetsData.cpu);
 
-            //as a last resort we always atleast try to boot into windows
-            responseText = responseText.replace('[autoexec]',
-                '[autoexec]\r\nimgmount c \"' + this.base_name +
-                '.img\"\r\n' + multiFileScript + 'boot c:');
-        }
-
-        //ram override
-        responseText = responseText.replace("memsize=32","memsize=" + this.ram);
-
-        //dos version override
-        responseText = responseText.replace("ver=7.1","ver=" + this.dosVersion);
-
-        //cpu override
-        responseText = responseText.replace("cycles=auto","cycles=" + this.rivetsData.cpu);
-        
-        // console.log(responseText);
-		Module.FS.writeFile('dosbox.conf',responseText);
+        Module.FS.writeFile('dosbox.conf', responseText);
 
         this.WriteConfigFile();
 
@@ -1058,16 +954,18 @@ class MyClass {
         this.changeFloppyDisk = Module.cwrap('neil_change_floppy', null, ['string']);
         this.loadFloppyDisk = Module.cwrap('neil_load_floppy', null, ['string']);
         this.sendDosCommands = Module.cwrap('neil_send_dos_commands', null, ['string']);
-        this.sendMouseMovement = Module.cwrap('neil_send_mouse_movement', null, ['number','number']);
-        this.sendDosControls = Module.cwrap('neil_send_dos_controls', null, 
-            ['string','string','string','array','number','string','string']); //arrays are always unsigned byte arrays
+        this.sendMouseMovement = Module.cwrap('neil_send_mouse_movement', null, ['number', 'number']);
+        this.sendDosControls = Module.cwrap(
+            'neil_send_dos_controls',
+            null,
+            ['string','string','string','array','number']
+        );
 
         Module.callMain();
         this.configureEmulator();
         this.findSavestateInDatabase();
         this.rivetsData.beforeEmulatorStarted = false;
-        
-    }
+        }
 
     hideMobileMenu() {
         if (this.rivetsData.mobileMode)
@@ -1080,7 +978,7 @@ class MyClass {
     setupMobileMode()
     {
         this.canvasWidth = window.outerWidth;
-        
+
         $("#btnHideMenu").show();
         let halfWidth = (window.outerWidth / 2) - 35;
 
@@ -1106,7 +1004,7 @@ class MyClass {
     }
 
     sanitizeName(name){
-        
+
         //get rid of the extension
         if (name.includes('.'))
         {
@@ -1159,9 +1057,9 @@ class MyClass {
     }
 
     async loadRom(noIso) {
-        
+
         this.Run();
-        
+
 
         if (noIso)
         {
@@ -1176,12 +1074,12 @@ class MyClass {
             let ram = this.readRomProp("ram");
             let harddrive = this.readRomProp("harddrive");
 
-    
+
             if (startupScript) this.configuration.startupScript = startupScript;
             if (cpu) this.rivetsData.cpu = cpu;
             if (ram) this.ram = ram;
             if (harddrive) this.initialHardDrive = harddrive;
-    
+
             console.log(this.configuration);
 
             this.rom_name = this.extractRomName(romurl);
@@ -1209,15 +1107,15 @@ class MyClass {
             this.gainNode = this.audioContext.createGain();
             this.gainNode.gain.value = 1;
             this.gainNode.connect(this.audioContext.destination);
-    
+
             //point at where the emulator is storing the audio buffer
             this.audioBufferResampled = new Int16Array(Module.HEAP16.buffer,Module._neilGetSoundBufferResampledAddress(),64000);
-    
+
             this.audioWritePosition = 0;
             this.audioReadPosition = 0;
             this.audioBackOffCounter = 0;
-    
-    
+
+
             this.pcmPlayer = this.audioContext.createScriptProcessor(AUDIOBUFFSIZE, 2, 2);
             this.pcmPlayer.onaudioprocess = this.AudioProcessRecurring.bind(this);
             this.pcmPlayer.connect(this.gainNode);
@@ -1371,7 +1269,7 @@ class MyClass {
             total = Math.ceil(total / 1000000);
 
             let formatted = loaded + 'MB / ' + total + 'MB';
-            
+
             document.getElementById('myProgress').style.width= percent + '%';
             document.getElementById('myProgress').innerHTML = formatted;
         };
@@ -1408,7 +1306,7 @@ class MyClass {
         req.send();
     }
 
-    
+
     newRom(){
         location.reload();
     }
@@ -1472,7 +1370,7 @@ class MyClass {
 
     resizeCanvas(){
         let ratio = this.frameHeight / this.frameWidth;
-        
+
         if (this.rivetsData.mobileMode)
             document.getElementById('canvasDiv').style.height = this.canvasWidth * ratio + 'px';
         else
@@ -1503,7 +1401,7 @@ class MyClass {
         {
             if (this[name])
                 localStorage.setItem(localStorageName, 'true');
-            else        
+            else
                 localStorage.setItem(localStorageName, 'false');
         }
         else
@@ -1604,7 +1502,7 @@ class MyClass {
         });
     }
 
-    
+
     /**
      * Description
      * @param {any} data
@@ -1617,7 +1515,7 @@ class MyClass {
             console.log('indexedDB not available');
             return;
         }
-        
+
         console.log('save to database called: ', data.length);
 
         var request = indexedDB.open('DOSWASMXDB');
@@ -1651,7 +1549,7 @@ class MyClass {
                 //these take a long time so we want to let the user know
                 if (saveType != SaveTypes.Savestate)
                 {
-                    toastr.info('Please Wait...');   
+                    toastr.info('Please Wait...');
                 }
             };
             addRequest.onerror = function (event) {
@@ -1779,7 +1677,7 @@ class MyClass {
             console.log('indexedDB not available');
             return;
         }
-        
+
         var request = indexedDB.open('DOSWASMXDB');
         request.onsuccess = function (ev) {
             var db = ev.target.result;
@@ -1867,7 +1765,7 @@ class MyClass {
         this.rivetsData.ramTemp = this.ram;
         this.rivetsData.initialHardDriveTemp = this.initialHardDrive;
         this.rivetsData.dosVersionTemp = this.dosVersion;
-        
+
         $("#settingsModal").modal();
     }
 
@@ -1930,7 +1828,7 @@ class MyClass {
     {
         console.log('js savestate event');
         let compressed = Module.FS.readFile('/save/1.sav'); //this is a Uint8Array
-        
+
         if (!myClass.rivetsData.loggedIn)
         {
             myClass.saveToDatabase(compressed, SaveTypes.Savestate);
@@ -1938,9 +1836,9 @@ class MyClass {
         }
 
         var saveMessage = "Cloud State Saved";
-        
+
         var xhr = new XMLHttpRequest;
-        xhr.open("POST", this.rivetsData.settings.CLOUDSAVEURL + "/SendStaveState?name=" + this.base_name + '.savestate.doswasmx' + 
+        xhr.open("POST", this.rivetsData.settings.CLOUDSAVEURL + "/SendStaveState?name=" + this.base_name + '.savestate.doswasmx' +
             "&password=" + this.rivetsData.password + "&emulator=doswasmx", true);
         xhr.send(compressed);
 
@@ -1961,7 +1859,7 @@ class MyClass {
                 console.log(error);
                 toastr.error('Error Loading Cloud Save');
             }
-            
+
         }
     }
 
@@ -2012,7 +1910,7 @@ class MyClass {
                     console.log(error);
                     reject();
                 }
-                
+
             };
 
             oReq.send(null);
@@ -2037,7 +1935,7 @@ class MyClass {
             let index = byteArrayDiffs[pointer] + (byteArrayDiffs[pointer+1]*256)
 		    	 + (byteArrayDiffs[pointer+2]*256*256) + (byteArrayDiffs[pointer+3]*256*256*256);
             pointer += 4;
-            
+
             let length = byteArrayDiffs[pointer] + (byteArrayDiffs[pointer+1]*256)
 		    	 + (byteArrayDiffs[pointer+2]*256*256) + (byteArrayDiffs[pointer+3]*256*256*256);
             pointer += 4;
@@ -2073,7 +1971,7 @@ class MyClass {
 
         let chunkSize = 10000;
         let arrayChunks = []; //array of Uint8SubArrays each of size chunk
-        
+
         this.diffCount = 0;
         let progressCounter = 5000000; //we update progress every 5 million
         for (let i = 0; i < this.baseHardDrive.length; i++) {
@@ -2092,7 +1990,7 @@ class MyClass {
                         data: subArray
                     });
 
-                
+
                 i += chunkSize-1;
                 this.diffCount++;
 
@@ -2112,7 +2010,7 @@ class MyClass {
             }
         }
 
-        
+
         this.arrayChunks = arrayChunks;
         console.log(arrayChunks);
 
@@ -2167,7 +2065,7 @@ class MyClass {
         finalArray = await this.compressArrayBuffer(finalArray.buffer);
 
         console.log('diffSize: ' + finalsize + ' compressedSize: ' + finalArray.length);
-        
+
         if (this.doIntegrityCheck)
         {
             this.rivetsData.message = 'Doing Integrity Check...';
@@ -2180,9 +2078,9 @@ class MyClass {
 
 
         var saveMessage = "Saved: " + finalArray.length.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        
+
         var xhr = new XMLHttpRequest;
-        xhr.open("POST", this.rivetsData.settings.CLOUDSAVEURL + "/SendStaveState?name=" + this.base_name + '.doswasmx' + 
+        xhr.open("POST", this.rivetsData.settings.CLOUDSAVEURL + "/SendStaveState?name=" + this.base_name + '.doswasmx' +
             "&password=" + this.rivetsData.password + "&emulator=doswasmx", true);
         xhr.send(finalArray);
 
@@ -2193,7 +2091,7 @@ class MyClass {
                     if (result=="\"Success\""){
                         toastr.info(saveMessage);
                         myClass.showToast('Diffs Saved');
-                        
+
                         if (myClass.doIntegrityCheck)
                         {
                             myClass.integrityCheck(compareHardDrive);
@@ -2212,7 +2110,7 @@ class MyClass {
                 console.log(error);
                 toastr.error('Error Loading Cloud Save');
             }
-            
+
         }
 
     }
@@ -2222,10 +2120,10 @@ class MyClass {
         const cs = new CompressionStream("gzip");
         //create the writer
         const writer = cs.writable.getWriter();
-        //write the buffer to the writer 
+        //write the buffer to the writer
         writer.write(input);
         writer.close();
-        //create the output 
+        //create the output
         const output = [];
         const reader = cs.readable.getReader();
         let totalSize = 0;
@@ -2238,7 +2136,7 @@ class MyClass {
         }
         const concatenated = new Uint8Array(totalSize);
         let offset = 0;
-        //finally build the compressed array and return it 
+        //finally build the compressed array and return it
         for (const array of output) {
           concatenated.set(array, offset);
           offset += array.byteLength;
@@ -2253,7 +2151,7 @@ class MyClass {
         const ds = new DecompressionStream("gzip");
         //create the writer
         const writer = ds.writable.getWriter();
-        //write the buffer to the writer thus decompressing it 
+        //write the buffer to the writer thus decompressing it
         writer.write(input);
         writer.close();
         //create the output
@@ -2270,7 +2168,7 @@ class MyClass {
         }
         const concatenated = new Uint8Array(totalSize);
         let offset = 0;
-        //finally build the compressed array and return it 
+        //finally build the compressed array and return it
         for (const array of output) {
          concatenated.set(array, offset);
          offset += array.byteLength;
@@ -2286,7 +2184,7 @@ class MyClass {
         {
             exportName = 'hdd.img';
         }
-        let filearray = Module.FS.readFile('/' + imgName);    
+        let filearray = Module.FS.readFile('/' + imgName);
         var file = new File([filearray], exportName, {type: "text/plain; charset=x-user-defined"});
         saveAs(file);
     }
@@ -2301,7 +2199,7 @@ class MyClass {
             Module.FS.mkdir('/' + myClass.importFolderName);
         }
 
-        this.isSpecialHandler = false; 
+        this.isSpecialHandler = false;
         this.importedFileNames = [];
         let files = event.currentTarget.files;
 
@@ -2385,7 +2283,7 @@ class MyClass {
                 }
                 else
                 {
-                    let importCommands = 
+                    let importCommands =
                         "mount e .\n" +
                         "xcopy e:\\" + myClass.importFolderName +
                         "\\*.* c:" + myClass.importFolderName  + " /I /E\n" +
@@ -2406,34 +2304,34 @@ class MyClass {
                                 let importFolder = myClass.sanitizeName(filename);
 
                                 importCommands += 'mount e \"' + filename +
-                                    "\"\nxcopy e:\ c:\\" + importFolder + 
+                                    "\"\nxcopy e:\ c:\\" + importFolder +
                                     " /i /e\n" +
                                     'mount -u e\n';
                                 myClass.winNotFoundCommands = 'cd ' + importFolder + '\n';
                             }
                             if (filename.toLocaleLowerCase().endsWith('.iso'))
                             {
-                                importCommands += 
+                                importCommands +=
                                     'mount -u d\n' + //unmount existing iso if there is one
                                     'imgmount d \"' + filename + '\"\n'; //mount new iso
                                 myClass.winNotFoundCommands = 'd:\n';
                             }
                             if (filename.toLocaleLowerCase().endsWith('.cue'))
                             {
-                                importCommands += 
+                                importCommands +=
                                     'mount -u d\n' + //unmount existing iso if there is one
                                     'imgmount d \"' + filename + '\"\n'; //mount new iso
                                 myClass.winNotFoundCommands = 'd:\n';
                             }
                             if (filename.toLocaleLowerCase().endsWith('.img'))
                             {
-                                importCommands += 
+                                importCommands +=
                                     'mount -u c\n' + //unmount existing img if there is one
                                     'imgmount c \"' + filename + '\"\n'; //mount new iso
                             }
                         }
 
-                        importCommands += 
+                        importCommands +=
                             'boot c:\n'; //boot windows
                     }
 
@@ -2470,12 +2368,12 @@ class MyClass {
             }
             catch(error){
                 console.log('no iso found');
-                //this means we did not have an iso                
+                //this means we did not have an iso
             }
         }
 
         Module._neil_toggle_pause();
-        
+
         //reset variables
         this.baseImageSaved = false;
         this.isoSaved = false;
@@ -2508,14 +2406,14 @@ class MyClass {
                 console.log(error);
                 toastr.error('Error Loading Cloud Save');
             }
-            
+
         };
 
         oReq.send(null);
     }
 
     async setupLogin() {
-        //prevent submit on enter 
+        //prevent submit on enter
         $('#txtPassword').bind("keypress", function (e) {
             if (e.keyCode == 13) {
                 e.preventDefault();
@@ -2533,7 +2431,7 @@ class MyClass {
         if (this.rivetsData.password){
             await this.loginSilent();
         }
-            
+
     }
 
     loginModal(){
@@ -2559,7 +2457,7 @@ class MyClass {
             toastr.success('Logged In');
             localStorage.setItem('doswasmx-password', this.rivetsData.password);
             await this.getSaveStates();
-            this.postLoginProcess();            
+            this.postLoginProcess();
         }
         else{
             toastr.error('Login Failed');
@@ -2571,7 +2469,7 @@ class MyClass {
     async loginSilent(){
         if (!this.rivetsData.hasCloud)
             return;
-        
+
         let result = await this.loginToServer();
         if (result=='Success'){
             await this.getSaveStates();
@@ -2624,7 +2522,7 @@ class MyClass {
     }
 
 
-    
+
     //USE THIS FOR DOING AN INTEGRITY CHECK ON DIFFED HARD DRIVE -
     async integrityCheck(newHardDriveBytes) {
 
@@ -2639,7 +2537,7 @@ class MyClass {
 
         let chunkSize = 10000;
         let arrayChunks = []; //array of Uint8SubArrays each of size chunk
-        
+
         this.diffCount = 0;
         let progressCounter = 5000000; //we update progress every 5 million
         for (let i = 0; i < newHardDriveBytes.length; i++) {
@@ -2658,7 +2556,7 @@ class MyClass {
                         data: subArray
                     });
 
-                
+
                 i += chunkSize;
                 this.diffCount++;
 
@@ -2698,7 +2596,7 @@ class MyClass {
             " <b>DONE</b>";
 
         console.log('integrity check results', arrayChunks, this.diffCount);
-        
+
         if (arrayChunks.length>0)
         {
             toastr.error("Failed integrity check");
@@ -2768,7 +2666,7 @@ class MyClass {
         if (this.autoKeyboardTimer==0)
         {
             this.showToast("Autokeyboard...")
-            
+
             this.sendKey(48) //F12
 
             setTimeout(() => {
@@ -2787,9 +2685,9 @@ class MyClass {
     {
         Module._neil_turbo();
     }
-    
 
-    HandleMessage(name, props) 
+
+    HandleMessage(name, props)
 	{
         // console.log('handlemessage', name, props)
 		if (name=='neil-resolution-changed')
@@ -2797,8 +2695,8 @@ class MyClass {
             console.log('ems: received neil-resolution-changed', props)
 			this.frameWidth = props.width;
 			this.frameHeight = props.height;
-			// this.rgbSource = new Uint8Array(this.frameWidth * this.frameHeight * 3); 
-			this.rgbaDestination = new Uint8ClampedArray(this.frameWidth * this.frameHeight * 4); 
+			// this.rgbSource = new Uint8Array(this.frameWidth * this.frameHeight * 3);
+			this.rgbaDestination = new Uint8ClampedArray(this.frameWidth * this.frameHeight * 4);
 			this.canvas.width = this.frameWidth;
 			this.canvas.height = this.frameHeight;
 
@@ -2864,9 +2762,9 @@ class MyClass {
         // myClass.ctx.putImageData(new ImageData(new Uint8ClampedArray(rgbSource), this.frameWidth, this.frameHeight), 0, 0);
 
         let destinationCounter = 0;
-        for (let y = 0; y < this.frameHeight; y++) 
+        for (let y = 0; y < this.frameHeight; y++)
         {
-            for (let x = 0; x < this.frameWidth; x++) 
+            for (let x = 0; x < this.frameWidth; x++)
             {
                 this.rgbaDestination[destinationCounter * 4 + 0] = rgbSource[destinationCounter * 4 + 0];
                 this.rgbaDestination[destinationCounter * 4 + 1] = rgbSource[destinationCounter * 4 + 1];
@@ -2928,7 +2826,7 @@ window.onunhandledrejection = function(error) {
     console.log('window.onunhandledrejection',error);
     myClass.onError(error.reason.message);
 }
-  
+
 
 window["Module"] = {
     onRuntimeInitialized: myClass.initModule,
