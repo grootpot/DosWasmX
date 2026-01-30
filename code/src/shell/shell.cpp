@@ -1562,7 +1562,7 @@ void SHELL_Init() {
 
     MSG_Add("SHELL_STARTUP_HEAD3", "\033[36mPixelWrath DOS on the web:                                                  \033[37m");
     MSG_Add("SHELL_STARTUP_TEXT3", "\033[32mWebsite\033[37m: \033[33mhttps://pixelwrath.com/                                            \033[36m\033[37m");
-    MSG_Add("SHELL_STARTUP_LAST", "It's made for fun. Enjoy!");
+    MSG_Add("SHELL_STARTUP_LAST", "MADE FOR FUN. ENJOY!");
 
 	MSG_Add("SHELL_CMD_BREAK_HELP","Sets or clears extended CTRL+C checking.\n");
 	MSG_Add("SHELL_CMD_BREAK_HELP_LONG","BREAK [ON | OFF]\n\nType BREAK without a parameter to display the current BREAK setting.\n");
